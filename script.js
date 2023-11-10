@@ -5,7 +5,7 @@ var longitude;
 var currentWind;
 var currentHumidity;
 var currentTemp;
-var today;
+var today = new Date().toLocaleDateString();
 var searchCityEl;
 
 function handleSearchFormSubmit(event) {
@@ -37,7 +37,7 @@ function handleSearchFormSubmit(event) {
   var currentWeatherUrl = currentWeather(latitude, longitude);
 
   fetch(currentWeatherUrl)
-    .then(function () {
+    .then(function (response) {
       if (!response.ok) {
         console.log(response.status);
         throw response.json();
@@ -49,9 +49,8 @@ function handleSearchFormSubmit(event) {
       currentWind = currentWeatherresponse.visibility.wind;
       console.log(currentWind);
       currentHumidity = currentWeatherresponse.main.humidity.unit;
-      console.assertlog(currentHumidity);
+      console.log(currentHumidity);
       currentTemp = currentWeatherresponse.main.temp;
-      today = new Date().toLocaleDateString();
     });
 }
 function geocode(city) {
@@ -62,7 +61,7 @@ function geocode(city) {
     WeatherAPIKey;
   return geocodeUrlEl;
 }
-function currentWeather(lati, long) {
+function currentWeather(latitude, longitude) {
   var currentWeatherUrlEl =
     "https://api.openweathermap.org/data/2.5/weather?lat=" +
     latitude +
