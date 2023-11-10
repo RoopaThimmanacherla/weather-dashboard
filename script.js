@@ -1,66 +1,35 @@
-var currentDay = $("#currentDay");
-var currentHour;
-var currentBlockHour;
+var searchFormEl = document.querySelector("#search-form");
+var WeatherAPIKey = "dd722ae2b0b3e5ffb448c9a00bf261d0";
+var latitude;
+var longitude;
+function handleSearchFormSubmit(event) {
+  event.preventDefault();
+  var searchCityEl = document.querySelector("#search-input").value;
 
-$(function () {
-  // Added a listener for click events on the save button. This code should save the data to localstorage
-
-  $(".saveBtn").on("click", function () {
-    var time = $(this).parent().attr("id").substring(5);
-    console.log(time);
-    var text = $(this).siblings("textarea").val();
-    console.log(text);
-    localStorage.setItem(time, text);
-  });
-
-  // Added code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour.
-  updateTimeBlock();
-  function updateTimeBlock() {
-    currentHour = dayjs().hour();
-    console.log(currentHour);
-    $(".time-block").each(function () {
-      currentBlockHour = parseInt($(this).attr("id").substring(5));
-      if (currentBlockHour < currentHour) {
-        $(this).addClass("past");
-        $(this).removeClass("present");
-        $(this).removeClass("future");
-      }
-
-      if (currentBlockHour === currentHour) {
-        $(this).addClass("present");
-        $(this).removeClass("past");
-        $(this).removeClass("future");
-      }
-
-      if (currentBlockHour > currentHour) {
-        $(this).removeClass("past");
-        $(this).removeClass("present");
-        $(this).addClass("future");
-      }
-    });
+  console.log(searchCityEl);
+  if (!searchCityEl) {
+    console.log("you need to enter a city to display weather!");
+    return;
   }
-  //  Added code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements.
+  var geocodeUrl =
+    "http://api.openweathermap.org/geo/1.0/direct?q=" +
+    searchCityEl +
+    "&limit=5&appid=" +
+    WeatherAPIKey;
 
-  $("#hour-9 .description").val(localStorage.getItem("9"));
-  $("#hour-10 .description").val(localStorage.getItem("10"));
-
-  $("#hour-11 .description").val(localStorage.getItem("11"));
-
-  $("#hour-12 .description").val(localStorage.getItem("12"));
-
-  $("#hour-13 .description").val(localStorage.getItem("13"));
-
-  $("#hour-14 .description").val(localStorage.getItem("14"));
-
-  $("#hour-15 .description").val(localStorage.getItem("15"));
-
-  $("#hour-16 .description").val(localStorage.getItem("16"));
-
-  $("#hour-17 .description").val(localStorage.getItem("17"));
-
-  //Added code to display the current date in the header of the page.
-
-  currentDay.text(dayjs().format("dddd,MMMM DD"));
-});
+  fetch(geocodeUrl)
+    .then(function (response) {
+      if (!response.ok) {
+        throw response.json();
+      }
+      return response.json();
+    })
+    .then(function (geocode) {
+      console.log(geocode);
+      console.log(geocode[0].lat);
+      console.log(geocode[0].lon);
+      latitude = geocode[0].lat;
+      longitude = geocode[0].lon;
+    });
+}
+searchFormEl.addEventListener("submit", handleSearchFormSubmit);
