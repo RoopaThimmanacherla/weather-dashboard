@@ -6,21 +6,18 @@ var currentWind;
 var currentHumidity;
 var currentTemp;
 var today;
+var searchCityEl;
 
 function handleSearchFormSubmit(event) {
   event.preventDefault();
-  var searchCityEl = document.querySelector("#search-input").value;
+  searchCityEl = document.querySelector("#search-input").value;
 
   console.log(searchCityEl);
   if (!searchCityEl) {
     console.log("you need to enter a city to display weather!");
     return;
   }
-  var geocodeUrl =
-    "http://api.openweathermap.org/geo/1.0/direct?q=" +
-    searchCityEl +
-    "&limit=5&appid=" +
-    WeatherAPIKey;
+  var geocodeUrl = geocode(searchCityEl);
 
   fetch(geocodeUrl)
     .then(function (response) {
@@ -35,15 +32,9 @@ function handleSearchFormSubmit(event) {
       longitude = geocode[0].lon;
       console.log(latitude);
       console.log(longitude);
+      longitude = geocode[0].lon;
     });
-
-  var currentWeatherUrl =
-    "https://api.openweathermap.org/data/2.5/weather?lat=" +
-    latitude +
-    "&lon=" +
-    longitude +
-    "&appid=" +
-    WeatherAPIKey;
+  var currentWeatherUrl = currentWeather(latitude, longitude);
 
   fetch(currentWeatherUrl)
     .then(function () {
@@ -53,14 +44,33 @@ function handleSearchFormSubmit(event) {
       }
       return response.json();
     })
-    .then(function (currentWeather) {
-      console.log(currentWeather);
-      currentWind = currentWeather.visibility.wind;
+    .then(function (currentWeatherresponse) {
+      console.log(currentWeatherresponse);
+      currentWind = currentWeatherresponse.visibility.wind;
       console.log(currentWind);
-      currentHumidity = currentWeather.main.humidity.unit;
+      currentHumidity = currentWeatherresponse.main.humidity.unit;
       console.assertlog(currentHumidity);
-      currentTemp = currentWeather.main.temp;
+      currentTemp = currentWeatherresponse.main.temp;
       today = new Date().toLocaleDateString();
     });
+}
+function geocode(city) {
+  var geocodeUrlEl =
+    "http://api.openweathermap.org/geo/1.0/direct?q=" +
+    searchCityEl +
+    "&limit=5&appid=" +
+    WeatherAPIKey;
+  return geocodeUrlEl;
+}
+function currentWeather(lati, long) {
+  var currentWeatherUrlEl =
+    "https://api.openweathermap.org/data/2.5/weather?lat=" +
+    latitude +
+    "&lon=" +
+    longitude +
+    "&appid=" +
+    WeatherAPIKey;
+
+  return currentWeatherUrlEl;
 }
 searchFormEl.addEventListener("submit", handleSearchFormSubmit);
