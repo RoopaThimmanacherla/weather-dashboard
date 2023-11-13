@@ -9,7 +9,7 @@ var today = new Date().toLocaleDateString();
 var searchCityEl;
 var iconUrl;
 var cityArr;
-
+//function called on clicking the search in form
 function handleSearchFormSubmit(event) {
   event.preventDefault();
   searchCityEl = document.querySelector("#search-input").value;
@@ -21,7 +21,7 @@ function handleSearchFormSubmit(event) {
   }
   geocode(searchCityEl);
 }
-
+//creates a list of each city after displaing the weather
 function cityList(city) {
   var cityListItem = $(
     '<li class="flex-row  p-2 list-group-item-dark  text-dark" style="list-style-type: none;margin-top:10px;text-align: center">'
@@ -29,7 +29,7 @@ function cityList(city) {
   cityListItem.text(city);
   $(".list-group").append(cityListItem);
 }
-
+//This will return the latitude and longitude of the city
 function geocode(city) {
   var geocodeUrlEl =
     "https://api.openweathermap.org/geo/1.0/direct?q=" +
@@ -56,6 +56,7 @@ function geocode(city) {
       fiveDayWeather(latitude, longitude);
     });
 }
+//provide the url for current weather
 function currentWeather(latitude, longitude) {
   var currentWeatherUrlEl =
     "https://api.openweathermap.org/data/2.5/weather?lat=" +
@@ -68,7 +69,7 @@ function currentWeather(latitude, longitude) {
 
   getCurrentWeather(currentWeatherUrlEl);
 }
-
+//Provide the url for five days weather of the city searched
 function fiveDayWeather(latitude, longitude) {
   var fiveDayWeatherUrl =
     "https://api.openweathermap.org/data/2.5/forecast?lat=" +
@@ -89,6 +90,7 @@ function currentInitialCity() {
     }
   }
 }
+//displays the current weather
 function getCurrentWeather(currentWeatherUrl) {
   fetch(currentWeatherUrl)
     .then(function (response) {
@@ -140,6 +142,7 @@ function getCurrentWeather(currentWeatherUrl) {
       $("#currentHumidity").html("Humidity:" + currentHumidity + "%");
     });
 }
+//displays the five days weather
 function getFivedayWeather(fiveDayWeatherUrl) {
   fetch(fiveDayWeatherUrl)
     .then(function (response) {
@@ -185,6 +188,7 @@ function getFivedayWeather(fiveDayWeatherUrl) {
       }
     });
 }
+//diplays the weather for the city searched from the city
 function displayweatherInfo(event) {
   var listClicked = $(event.target);
   var listValue = listClicked.text();
