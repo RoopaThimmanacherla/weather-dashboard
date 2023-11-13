@@ -19,9 +19,25 @@ function handleSearchFormSubmit(event) {
     console.log("you need to enter a city to display weather!");
     return;
   }
-  var geocodeUrl = geocode(searchCityEl);
+  geocode(searchCityEl);
+}
 
-  fetch(geocodeUrl)
+function cityList(city) {
+  var cityListItem = $(
+    '<li class="flex-row  p-2 list-group-item-dark  text-dark" style="list-style-type: none;margin-top:10px;text-align: center">'
+  );
+  cityListItem.text(city);
+  $(".list-group").append(cityListItem);
+}
+
+function geocode(city) {
+  var geocodeUrlEl =
+    "http://api.openweathermap.org/geo/1.0/direct?q=" +
+    city +
+    "&limit=5&appid=" +
+    WeatherAPIKey;
+
+  fetch(geocodeUrlEl)
     .then(function (response) {
       if (!response.ok) {
         throw response.json();
@@ -39,23 +55,6 @@ function handleSearchFormSubmit(event) {
       currentWeather(latitude, longitude);
       fiveDayWeather(latitude, longitude);
     });
-}
-
-function cityList(city) {
-  var cityListItem = $(
-    '<li class="flex-row  p-2 list-group-item-dark  text-dark" style="list-style-type: none;margin-top:10px;text-align: center">'
-  );
-  cityListItem.text(city);
-  $(".list-group").append(cityListItem);
-}
-
-function geocode(city) {
-  var geocodeUrlEl =
-    "http://api.openweathermap.org/geo/1.0/direct?q=" +
-    city +
-    "&limit=5&appid=" +
-    WeatherAPIKey;
-  return geocodeUrlEl;
 }
 function currentWeather(latitude, longitude) {
   var currentWeatherUrlEl =
@@ -136,18 +135,9 @@ function getCurrentWeather(currentWeatherUrl) {
           currentWeatherIconUrl +
           ">"
       );
-      $("#currentWeather").html(
-        "wind:" +
-          currentWind +
-          "MPH" +
-          "\n" +
-          "Humidity:" +
-          currentHumidity +
-          "%" +
-          "Temperature:" +
-          currentTemp +
-          "F"
-      );
+      $("#currentTemp").html("Temperature:" + currentTemp + "F");
+      $("#currentWind").html("wind:" + currentWind + "MPH");
+      $("#currentHumidity").html("Humidity:" + currentHumidity + "%");
     });
 }
 function getFivedayWeather(fiveDayWeatherUrl) {
@@ -187,17 +177,10 @@ function getFivedayWeather(fiveDayWeatherUrl) {
         $("#day" + listIndex).html(
           searchCityEl + "(" + forecastDate + ")" + "<img src=" + iconUrl + ">"
         );
-        $("#report" + listIndex).html(
-          "Wind:" +
-            fiveDayWind +
-            "MPH" +
-            "\n" +
-            "Humidity:" +
-            fiveDayHumidity +
-            "%" +
-            "Temperature:" +
-            fiveDayTemp +
-            "F"
+        $("#forecastTemp" + listIndex).html("Temperature:" + fiveDayTemp + "F");
+        $("#forecastWind" + listIndex).html("Wind:" + fiveDayWind + "MPH");
+        $("#forecastHumidity" + listIndex).html(
+          "Humidity:" + fiveDayHumidity + "%"
         );
       }
     });
@@ -206,7 +189,8 @@ function displayweatherInfo(event) {
   var listClicked = $(event.target);
   var listValue = listClicked.text();
   console.log("listvalue:" + listValue);
-  var geourl = geocode(listValue);
+  searchCityEl = listValue;
+  geocode(listValue);
 }
 
 searchFormEl.addEventListener("submit", handleSearchFormSubmit);
