@@ -85,29 +85,21 @@ function fiveDayWeather(latitude, longitude) {
   getFivedayWeather(fiveDayWeatherUrl);
 }
 
-function find(c) {
-  for (var i = 0; i < cityArr.length; i++) {
-    if (c.toUpperCase() === sCity[i]) {
-      return -1;
-    }
-  }
-  return 1;
-}
 function getCurrentWeather(currentWeatherUrl) {
   fetch(currentWeatherUrl)
     .then(function (response) {
       if (!response.ok) {
         throw response.json();
-      } else if (response.cod == 200) {
+      } else if (response.status == 200) {
         console.log(response);
-        cityArr = localStorage.getItem("CityName");
+        cityArr = JSON.parse(localStorage.getItem("CityName"));
         if (cityArr == null) {
           cityArr = [];
           cityArr.push(searchCityEl);
           localStorage.setItem("CityName", JSON.stringify(cityArr));
           cityList(searchCityEl);
         } else {
-          if (find(searchCityEl) > 0) {
+          if (cityArr.includes(searchCityEl) === false) {
             cityArr.push(searchCityEl);
             localStorage.setItem("CityName", JSON.stringify(cityArr));
             cityList(searchCityEl);
