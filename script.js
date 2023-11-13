@@ -8,6 +8,7 @@ var currentTemp;
 var today = new Date().toLocaleDateString();
 var searchCityEl;
 var iconUrl;
+var cityArr;
 
 function handleSearchFormSubmit(event) {
   event.preventDefault();
@@ -53,7 +54,7 @@ function cityList() {
 function geocode(city) {
   var geocodeUrlEl =
     "http://api.openweathermap.org/geo/1.0/direct?q=" +
-    searchCityEl +
+    city +
     "&limit=5&appid=" +
     WeatherAPIKey;
   return geocodeUrlEl;
@@ -83,13 +84,36 @@ function fiveDayWeather(latitude, longitude) {
 
   getFivedayWeather(fiveDayWeatherUrl);
 }
+
+function find(c) {
+  for (var i = 0; i < cityArr.length; i++) {
+    if (c.toUpperCase() === sCity[i]) {
+      return -1;
+    }
+  }
+  return 1;
+}
 function getCurrentWeather(currentWeatherUrl) {
   fetch(currentWeatherUrl)
     .then(function (response) {
       if (!response.ok) {
         throw response.json();
+      } else if (response.cod == 200) {
+        console.log(response);
+        cityArr = localStorage.getItem("CityName");
+        if (cityArr == null) {
+          cityArr = [];
+          cityArr.push(searchCityEl);
+          localStorage.setItem("CityName", JSON.stringify(cityArr));
+          cityList(searchCityEl);
+        } else {
+          if (find(searchCityEl) > 0) {
+            cityArr.push(searchCityEl);
+            localStorage.setItem("CityName", JSON.stringify(cityArr));
+            cityList(searchCityEl);
+          }
+        }
       }
-      console.log(response);
       return response.json();
     })
     .then(function (currentWeatherresponse) {
