@@ -41,11 +41,11 @@ function handleSearchFormSubmit(event) {
     });
 }
 
-function cityList() {
+function cityList(city) {
   var cityListItem = $(
     '<li class="flex-row  p-2 list-group-item-dark  text-dark" style="list-style-type: none;margin-top:10px;text-align: center">'
   );
-  cityListItem.text(searchCityEl);
+  cityListItem.text(city);
   $(".list-group").append(cityListItem);
 }
 
@@ -82,14 +82,20 @@ function fiveDayWeather(latitude, longitude) {
 
   getFivedayWeather(fiveDayWeatherUrl);
 }
-
+function currentInitialCity() {
+  cityArr = JSON.parse(localStorage.getItem("CityName"));
+  if (cityArr) {
+    for (var i = 0; i < cityArr.length; i++) {
+      cityList(cityArr[i]);
+    }
+  }
+}
 function getCurrentWeather(currentWeatherUrl) {
   fetch(currentWeatherUrl)
     .then(function (response) {
       if (!response.ok) {
         throw response.json();
       } else if (response.status == 200) {
-        cityList();
         console.log(response);
         cityArr = JSON.parse(localStorage.getItem("CityName"));
         if (cityArr == null) {
@@ -98,6 +104,9 @@ function getCurrentWeather(currentWeatherUrl) {
           localStorage.setItem("CityName", JSON.stringify(cityArr));
         } else {
           if (cityArr.includes(searchCityEl) === false) {
+            cityList(searchCityEl);
+
+            console.log("cityArr");
             cityArr.push(searchCityEl);
             localStorage.setItem("CityName", JSON.stringify(cityArr));
           }
@@ -192,3 +201,4 @@ function getFivedayWeather(fiveDayWeatherUrl) {
 }
 
 searchFormEl.addEventListener("submit", handleSearchFormSubmit);
+currentInitialCity();
