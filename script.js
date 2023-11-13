@@ -178,11 +178,14 @@ function getFivedayWeather(fiveDayWeatherUrl) {
         var weatherIcon =
           fivedayWeatherresponse.list[4 + 8 * listIndex].weather[0].icon;
         console.log(weatherIcon);
+        var forecastDate = dayjs()
+          .add(listIndex + 1, "day")
+          .format("MM/DD/YYYY");
         iconUrl =
           "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
 
         $("#day" + listIndex).html(
-          searchCityEl + "(" + today + ")" + "<img src=" + iconUrl + ">"
+          searchCityEl + "(" + forecastDate + ")" + "<img src=" + iconUrl + ">"
         );
         $("#report" + listIndex).html(
           "Wind:" +
@@ -199,6 +202,14 @@ function getFivedayWeather(fiveDayWeatherUrl) {
       }
     });
 }
+function displayweatherInfo(event) {
+  var listClicked = $(event.target);
+  var listValue = listClicked.text();
+  console.log("listvalue:" + listValue);
+  var geourl = geocode(listValue);
+}
 
 searchFormEl.addEventListener("submit", handleSearchFormSubmit);
+$(".list-group").on("click", "li", displayweatherInfo);
+
 currentInitialCity();
