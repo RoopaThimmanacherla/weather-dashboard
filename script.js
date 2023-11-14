@@ -15,6 +15,7 @@ function handleSearchFormSubmit(event) {
   searchCityEl = document.querySelector("#search-input").value;
 
   console.log(searchCityEl);
+
   if (!searchCityEl) {
     console.log("you need to enter a city to display weather!");
     return;
@@ -101,10 +102,15 @@ function getCurrentWeather(currentWeatherUrl) {
         cityArr = JSON.parse(localStorage.getItem("CityName"));
         if (cityArr == null) {
           cityArr = [];
+
           cityArr.push(searchCityEl);
           localStorage.setItem("CityName", JSON.stringify(cityArr));
         } else {
-          if (cityArr.includes(searchCityEl) === false) {
+          var cityArrToUp = String.prototype.toUpperCase
+            .apply(cityArr)
+            .split(",");
+          var searchCityElUpperCase = searchCityEl.toUpperCase();
+          if (cityArrToUp.includes(searchCityElUpperCase) === false) {
             cityList(searchCityEl);
 
             console.log("cityArr");
