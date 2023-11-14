@@ -194,6 +194,7 @@ function displayweatherInfo(event) {
   var listValue = listClicked.text();
   console.log("listvalue:" + listValue);
   searchCityEl = listValue;
+  document.getElementById("search-input").value = searchCityEl;
   geocode(listValue);
 }
 
