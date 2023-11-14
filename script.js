@@ -183,9 +183,7 @@ function getFivedayWeather(fiveDayWeatherUrl) {
         iconUrl =
           "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
 
-        $("#day" + listIndex).html(
-          searchCityEl + "(" + forecastDate + ")" + "<img src=" + iconUrl + ">"
-        );
+        $("#day" + listIndex).html(forecastDate + "<img src=" + iconUrl + ">");
         $("#forecastTemp" + listIndex).html("Temperature:" + fiveDayTemp + "F");
         $("#forecastWind" + listIndex).html("Wind:" + fiveDayWind + "MPH");
         $("#forecastHumidity" + listIndex).html(
