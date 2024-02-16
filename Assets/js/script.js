@@ -104,6 +104,8 @@ function getCurrentWeather(currentWeatherUrl) {
           cityArr = [];
 
           cityArr.push(searchCityEl);
+          cityList(searchCityEl);
+
           localStorage.setItem("CityName", JSON.stringify(cityArr));
         } else {
           var cityArrToUp = String.prototype.toUpperCase
